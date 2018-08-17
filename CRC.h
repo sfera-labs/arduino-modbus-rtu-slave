@@ -57,7 +57,7 @@ static const byte auchCRCLo[] = {
 
 class CRCClass {
   public:
-    static void crc16(byte *data, byte length, byte *crc);
+    static inline void crc16(byte *data, byte length, byte *crc);
 };
 
 void CRCClass::crc16(byte *data, byte length, byte *crc) {
