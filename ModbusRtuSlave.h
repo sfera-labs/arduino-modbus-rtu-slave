@@ -48,7 +48,7 @@ typedef byte Callback(byte, byte, word, word, byte*);
 class ModbusRtuSlaveClass {
   public:
     static void begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin);
-    static byte setCallback(Callback *callback);
+    static void setCallback(Callback *callback);
     static void process();
     static void responseAddBit(bool on);
     static void responseAddRegister(word value);

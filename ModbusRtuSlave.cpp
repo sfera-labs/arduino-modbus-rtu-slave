@@ -44,7 +44,7 @@ void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long bau
   _last_available = 0;
 }
 
-byte ModbusRtuSlaveClass::setCallback(Callback *callback) {
+void ModbusRtuSlaveClass::setCallback(Callback *callback) {
   _callback = callback;
 }
 
