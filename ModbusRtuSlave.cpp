@@ -165,6 +165,8 @@ void ModbusRtuSlaveClass::process() {
     } else {
       exCode = MB_EX_SERVER_DEVICE_FAILURE;
     }
+  } else if (_unitAddr == 0) {
+    return;
   }
 
   if (exCode == MB_RESP_IGNORE) {
