@@ -43,10 +43,9 @@
 
 #define MODBUS_BUFFER_SIZE 64
 
-typedef byte Callback(byte, byte, word, word, byte*);
-
 class ModbusRtuSlaveClass {
   public:
+    typedef byte Callback(byte, byte, word, word, byte*);
     static void begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin);
     static void setCallback(Callback *callback);
     static void process();

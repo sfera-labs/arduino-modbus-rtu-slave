@@ -21,7 +21,7 @@ unsigned long ModbusRtuSlaveClass::_last_available_ts;
 unsigned long ModbusRtuSlaveClass::_t35chars;
 byte ModbusRtuSlaveClass::_inBuff[MODBUS_BUFFER_SIZE];
 byte ModbusRtuSlaveClass::_outBuff[MODBUS_BUFFER_SIZE];
-Callback *ModbusRtuSlaveClass::_callback;
+ModbusRtuSlaveClass::Callback *ModbusRtuSlaveClass::_callback;
 int ModbusRtuSlaveClass::_respOffset;
 
 void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin) {
@@ -44,7 +44,7 @@ void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long bau
   _last_available = 0;
 }
 
-void ModbusRtuSlaveClass::setCallback(Callback *callback) {
+void ModbusRtuSlaveClass::setCallback(ModbusRtuSlaveClass::Callback *callback) {
   _callback = callback;
 }
 
