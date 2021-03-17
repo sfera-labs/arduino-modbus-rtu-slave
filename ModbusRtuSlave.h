@@ -1,7 +1,7 @@
 /*
   ModbusRtuSlave.h - Modbus RTU Slave library for Arduino
 
-    Copyright (C) 2018 Sfera Labs S.r.l. - All rights reserved.
+    Copyright (C) 2018-2021 Sfera Labs S.r.l. - All rights reserved.
 
   This code is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -41,7 +41,7 @@
 #define MB_RESP_OK 0x00
 #define MB_RESP_IGNORE 0xFF
 
-#define MODBUS_BUFFER_SIZE 64
+#define MODBUS_BUFFER_SIZE 256
 
 class ModbusRtuSlaveClass {
   public:
