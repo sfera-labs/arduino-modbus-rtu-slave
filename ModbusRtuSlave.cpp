@@ -16,21 +16,24 @@
 byte ModbusRtuSlaveClass::_unitAddr;
 Stream *ModbusRtuSlaveClass::_port;
 int ModbusRtuSlaveClass::_txEnPin;
-uint16_t ModbusRtuSlaveClass::_last_available;
-unsigned long ModbusRtuSlaveClass::_last_available_ts;
+bool ModbusRtuSlaveClass::_txEnInv;
 unsigned long ModbusRtuSlaveClass::_t35chars;
 byte ModbusRtuSlaveClass::_inBuff[MODBUS_BUFFER_SIZE];
+int ModbusRtuSlaveClass::_inBuffIdx;
+unsigned long ModbusRtuSlaveClass::_inBuffTs;
 byte ModbusRtuSlaveClass::_outBuff[MODBUS_BUFFER_SIZE];
 ModbusRtuSlaveClass::Callback *ModbusRtuSlaveClass::_callback;
 int ModbusRtuSlaveClass::_respOffset;
 
-void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin) {
+void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin, bool txEnInv) {
   _unitAddr = unitAddr;
   _port = serial;
   _txEnPin = txEnPin;
+  _txEnInv = txEnInv;
 
   if (_txEnPin > 0) {
       pinMode(_txEnPin, OUTPUT);
+      digitalWrite(_txEnPin, _txEnInv ? HIGH : LOW);
   }
 
   _port->setTimeout(0);
@@ -41,7 +44,11 @@ void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long bau
     _t35chars = 1750;
   }
 
-  _last_available = 0;
+  _inBuffIdx = 0;
+}
+
+void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin) {
+  begin(unitAddr, serial, baud, txEnPin, false);
 }
 
 void ModbusRtuSlaveClass::setCallback(ModbusRtuSlaveClass::Callback *callback) {
@@ -49,23 +56,18 @@ void ModbusRtuSlaveClass::setCallback(ModbusRtuSlaveClass::Callback *callback) {
 }
 
 void ModbusRtuSlaveClass::process() {
-  uint16_t available;
-  unsigned long now;
-  size_t inLen = 0;
-  size_t pduLen;
-
-  available = _port->available();
-  if (available > 0) {
-    now = micros();
-    if (available != _last_available) {
-      _last_available = available;
-      _last_available_ts = now;
-
-    } else if (now - _last_available_ts >= _t35chars) {
-      inLen = _port->readBytes(_inBuff, available);
-      _last_available = 0;
-    }
+  while (_port->available() > 0 &&
+            _inBuffIdx + _port->available() <= MODBUS_BUFFER_SIZE) {
+    _inBuffIdx += _port->readBytes(_inBuff + _inBuffIdx, _port->available());
+    _inBuffTs = micros();
   }
+
+  if (_inBuffIdx <= 0 || (micros() - _inBuffTs < _t35chars)) {
+    return;
+  }
+
+  size_t inLen = _inBuffIdx;
+  _inBuffIdx = 0;
 
   if (inLen < 8) {
     return;
@@ -83,6 +85,7 @@ void ModbusRtuSlaveClass::process() {
     return;
   }
 
+  size_t pduLen;
   byte function = _inBuff[1];
   word regAddr = word(_inBuff[2], _inBuff[3]);
   word qty;
@@ -185,14 +188,14 @@ void ModbusRtuSlaveClass::process() {
   CRC.crc16(_outBuff, pduLen + 1, _outBuff + pduLen + 1);
 
   if (_txEnPin > 0) {
-    digitalWrite(_txEnPin, HIGH);
+    digitalWrite(_txEnPin, _txEnInv ? LOW : HIGH);
   }
 
   _port->write(_outBuff, pduLen + 3);
   _port->flush();
 
   if (_txEnPin > 0) {
-    digitalWrite(_txEnPin, LOW);
+    digitalWrite(_txEnPin, _txEnInv ? HIGH : LOW);
   }
 }
 
@@ -221,6 +224,7 @@ bool ModbusRtuSlaveClass::getDataCoil(byte function, byte* data, unsigned int id
   } else if (function == MB_FC_WRITE_MULTIPLE_COILS) {
     return bitRead(data[idx / 8], idx % 8) == 1;
   }
+  return false;
 }
 
 word ModbusRtuSlaveClass::getDataRegister(byte function, byte* data, unsigned int idx) {
@@ -229,4 +233,5 @@ word ModbusRtuSlaveClass::getDataRegister(byte function, byte* data, unsigned in
   } else if (function == MB_FC_WRITE_MULTIPLE_REGISTERS) {
     return word(data[idx * 2], data[idx * 2 + 1]);
   }
+  return 0;
 }

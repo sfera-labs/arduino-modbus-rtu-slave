@@ -46,6 +46,7 @@
 class ModbusRtuSlaveClass {
   public:
     typedef byte Callback(byte, byte, word, word, byte*);
+    static void begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin, bool txEnInv);
     static void begin(byte unitAddr, Stream *serial, unsigned long baud, int txEnPin);
     static void setCallback(Callback *callback);
     static void process();
@@ -58,10 +59,11 @@ class ModbusRtuSlaveClass {
     static byte _unitAddr;
     static Stream *_port;
     static int _txEnPin;
-    static uint16_t _last_available;
-    static unsigned long _last_available_ts;
+    static bool _txEnInv;
     static unsigned long _t35chars;
     static byte _inBuff[MODBUS_BUFFER_SIZE];
+    static int _inBuffIdx;
+    static unsigned long _inBuffTs;
     static byte _outBuff[MODBUS_BUFFER_SIZE];
     static Callback *_callback;
     static int _respOffset;
