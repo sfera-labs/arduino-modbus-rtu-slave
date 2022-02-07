@@ -36,8 +36,6 @@ void ModbusRtuSlaveClass::begin(byte unitAddr, Stream *serial, unsigned long bau
       digitalWrite(_txEnPin, _txEnInv ? HIGH : LOW);
   }
 
-  _port->setTimeout(0);
-
   if (baud <= 19200) {
     _t35chars = 3500000 * 11 / baud;
   } else {
