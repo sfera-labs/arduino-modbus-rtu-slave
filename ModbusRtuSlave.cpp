@@ -54,10 +54,11 @@ void ModbusRtuSlaveClass::setCallback(ModbusRtuSlaveClass::Callback *callback) {
 }
 
 void ModbusRtuSlaveClass::process() {
-  while (_port->available() > 0 &&
-            _inBuffIdx + _port->available() <= MODBUS_BUFFER_SIZE) {
-    _inBuffIdx += _port->readBytes(_inBuff + _inBuffIdx, _port->available());
+  int inAval = _port->available();
+  while (inAval > 0 && _inBuffIdx + inAval <= MODBUS_BUFFER_SIZE) {
+    _inBuffIdx += _port->readBytes(_inBuff + _inBuffIdx, inAval);
     _inBuffTs = micros();
+    inAval = _port->available();
   }
 
   if (_inBuffIdx <= 0 || (micros() - _inBuffTs < _t35chars)) {
