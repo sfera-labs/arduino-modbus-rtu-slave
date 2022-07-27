@@ -74,7 +74,7 @@ void ModbusRtuSlaveClass::process() {
 
   byte unitAddr = _inBuff[0];
 
-  if (_unitAddr > 0 && _unitAddr != unitAddr) {
+  if (_unitAddr != 0 && unitAddr != 0 && _unitAddr != unitAddr) {
     return;
   }
 
@@ -171,7 +171,7 @@ void ModbusRtuSlaveClass::process() {
     return;
   }
 
-  if (exCode == MB_RESP_IGNORE) {
+  if (exCode == MB_RESP_IGNORE || unitAddr == 0) {
     return;
   }
 
