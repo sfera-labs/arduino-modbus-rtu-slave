@@ -1,7 +1,10 @@
 /*
   ModbusRtuSlave.h - Modbus RTU Slave library for Arduino
+  
+    Copyright (C) 2018-2022 Sfera Labs S.r.l. - All rights reserved.
 
-    Copyright (C) 2018-2021 Sfera Labs S.r.l. - All rights reserved.
+    For information, see:
+    https://www.sferalabs.cc/
 
   This code is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public

@@ -1,7 +1,10 @@
 /*  
   ModbusSlave.ino - Arduino sketch showing the use of the ModbusRtuSlave library
 
-    Copyright (C) 2018 Sfera Labs S.r.l. - All rights reserved.
+    Copyright (C) 2018-2022 Sfera Labs S.r.l. - All rights reserved.
+
+    For information, see:
+    https://www.sferalabs.cc/
   
   This code is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -83,4 +86,3 @@ byte onRequest(byte unitAddr, byte function, word regAddr, word qty, byte *data)
       return MB_EX_ILLEGAL_FUNCTION;
   }
 }
-
