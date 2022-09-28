@@ -7,7 +7,7 @@
 - Go to the menu *Sketch* > *Include Library* > *Add .ZIP Library...*
 - Select the downloaded zip file
 
-After installation you will see the example sketches under the menu *File* > *Examples*
+After installation you will see the example sketches under the menu *File* > *Examples* > *Modbus RTU Slave*
 
 ## Library usage
 
