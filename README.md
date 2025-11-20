@@ -2,6 +2,8 @@
 
 ## Library installation
 
+Search `ModbusRtuSlave` in the Library Manager of the Arduino IDE or install it manually:
+
 - [Download this repo](https://github.com/sfera-labs/arduino-modbus-rtu-slave/archive/refs/heads/master.zip)
 - Open the Arduino IDE
 - Go to the menu *Sketch* > *Include Library* > *Add .ZIP Library...*
